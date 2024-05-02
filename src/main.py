@@ -1,5 +1,7 @@
-from src.api import save_to_json, VacancyHH, ApiHH
+from src.api import ApiHH
 from src.db_manager import DBManager
+from src.hh import VacancyHH
+from src.utils import save_to_json
 
 
 def main():
@@ -37,7 +39,7 @@ def main():
         print("2. Получить список всех вакансий")
         print("3. Получить среднюю зарплату по вакансиям")
         print("4. Получить список всех вакансий, у которых зарплата выше средней по всем вакансиям")
-        print("5. Получить список всех вакансий, в названии которых содержатся переданные в метод слова")
+        print("5. Получить список всех вакансий, в названии которых содержатся переданные слова")
         print("6. Выход")
         choice = input("Введите номер вашего выбора: ")
         if choice == '1':
