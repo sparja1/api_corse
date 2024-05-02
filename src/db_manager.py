@@ -3,39 +3,63 @@ from psycopg2 import sql
 
 
 class DBManager:
+    """
+    Класс для работы с базой данных
+    """
     def __init__(self, dbname, user, password, host):
         self.conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         self.cursor = self.conn.cursor()
 
     def clear_db(self):
+        """
+        Метод очистки таблиц
+        """
         self.cursor.execute("DELETE FROM vacancies;")
         self.cursor.execute("DELETE FROM companies;")
         self.conn.commit()
 
     def get_companies_and_vacancies_count(self):
+        """
+        :return: Считает количество вакансий одной компании
+        """
         self.cursor.execute("SELECT company_id, COUNT(*) FROM vacancies GROUP BY company_id;")
         return self.cursor.fetchall()
 
     def get_all_vacancies(self):
+        """
+        :return: Список всех вакансий
+        """
         self.cursor.execute("SELECT company_id, name, salary, apply_alternate_url FROM vacancies;")
         return self.cursor.fetchall()
 
     def get_avg_salary(self):
+        """
+        :return: Среднюю зарплату по вакансиям
+        """
         self.cursor.execute("SELECT AVG(salary) FROM vacancies WHERE salary IS NOT NULL;")
         return self.cursor.fetchone()
 
     def get_vacancies_with_higher_salary(self):
+        """
+        :return: Список всех вакансий, у которых зарплата выше средней по всем вакансиям
+        """
         avg_salary = self.get_avg_salary()[0]
         self.cursor.execute(sql.SQL("SELECT company_id, name, salary, apply_alternate_url "
                                     "FROM vacancies WHERE salary > %s;"), (avg_salary,))
         return self.cursor.fetchall()
 
     def get_vacancies_with_keyword(self, keyword):
+        """
+        :return: Список всех вакансий, в названии которых содержатся переданные слова"
+        """
         self.cursor.execute(sql.SQL("SELECT company_id, name, salary, apply_alternate_url "
                                     "FROM vacancies WHERE name LIKE %s;"), ('%' + keyword + '%',))
         return self.cursor.fetchall()
 
     def insert_into_db(self, data_vacancy_dict):
+        """
+        :return:
+        """
         for vacancy in data_vacancy_dict:
             base_employer = {
                 1740: 'Яндекс',
