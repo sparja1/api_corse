@@ -58,8 +58,7 @@ def main():
         data_vacancy.extend(vacancy_list)
     data_vacancy_dict = [vacancy.to_dict() for vacancy in data_vacancy]
     save_to_json(data_vacancy_dict)
-    db = DBManager('api_hh', 'postgres', '449558', 'localhost')
-    db.clear_db()
+    db = DBManager('YouDatabase', 'postgres', 'youpassword', 'localhost')
     db.insert_into_db(data_vacancy_dict)
 
     while True:
