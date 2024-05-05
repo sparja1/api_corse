@@ -6,16 +6,41 @@ class DBManager:
     """
     Класс для работы с базой данных
     """
+
     def __init__(self, dbname, user, password, host):
         self.conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         self.cursor = self.conn.cursor()
+        self.create_tables()
 
-    def clear_db(self):
+    def create_tables(self):
         """
-        Метод очистки таблиц
+        Создает таблицы в базе данных
         """
-        self.cursor.execute("DELETE FROM vacancies;")
-        self.cursor.execute("DELETE FROM companies;")
+        commands = (
+            """
+            DROP TABLE IF EXISTS vacancies CASCADE;
+            DROP TABLE IF EXISTS companies CASCADE;
+            CREATE TABLE companies (
+                id INTEGER PRIMARY KEY,
+                name VARCHAR(255) NOT NULL
+            )
+            """,
+            """ 
+            CREATE TABLE vacancies (
+                id INTEGER PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                salary INTEGER,
+                short_description TEXT,
+                requirements TEXT,
+                apply_alternate_url VARCHAR(255),
+                company_id INTEGER,
+                FOREIGN KEY (company_id)
+                REFERENCES companies (id)
+                ON UPDATE CASCADE ON DELETE CASCADE
+            )
+            """)
+        for command in commands:
+            self.cursor.execute(command)
         self.conn.commit()
 
     def get_companies_and_vacancies_count(self):
@@ -89,3 +114,6 @@ class DBManager:
                  vacancy['requirements'], vacancy['apply_alternate_url'], vacancy['id_company'])
             )
         self.conn.commit()
+
+
+
