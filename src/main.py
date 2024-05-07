@@ -58,7 +58,7 @@ def main():
         data_vacancy.extend(vacancy_list)
     data_vacancy_dict = [vacancy.to_dict() for vacancy in data_vacancy]
     save_to_json(data_vacancy_dict)
-    db = DBManager('YouDatabase', 'postgres', 'youpassword', 'localhost')
+    db = DBManager()
     db.insert_into_db(data_vacancy_dict)
 
     while True:
@@ -81,6 +81,7 @@ def main():
             keyword = input("Введите ключевое слово: ")
             print(db.get_vacancies_with_keyword(keyword))
         elif choice == '6':
+            db.close()
             break
         else:
             print("Неверный ввод. Пожалуйста, введите номер от 1 до 6.")

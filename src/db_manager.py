@@ -1,4 +1,6 @@
 import psycopg2
+
+from config import DB_CONFIG
 from psycopg2 import sql
 
 
@@ -7,8 +9,8 @@ class DBManager:
     Класс для работы с базой данных
     """
 
-    def __init__(self, dbname, user, password, host):
-        self.conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
+    def __init__(self):
+        self.conn = psycopg2.connect(**DB_CONFIG)
         self.cursor = self.conn.cursor()
         self.create_tables()
 
@@ -80,6 +82,13 @@ class DBManager:
         self.cursor.execute(sql.SQL("SELECT company_id, name, salary, apply_alternate_url "
                                     "FROM vacancies WHERE name LIKE %s;"), ('%' + keyword + '%',))
         return self.cursor.fetchall()
+
+    def close(self):
+        """
+        Закрывает курсор и подключение
+        """
+        self.cursor.close()
+        self.conn.close()
 
     def insert_into_db(self, data_vacancy_dict):
         """
