@@ -81,6 +81,13 @@ class DBManager:
                                     "FROM vacancies WHERE name LIKE %s;"), ('%' + keyword + '%',))
         return self.cursor.fetchall()
 
+    def close(self):
+        """
+        Закрывает курсор и подключение
+        """
+        self.cursor.close()
+        self.conn.close()
+
     def insert_into_db(self, data_vacancy_dict):
         """
         :return:

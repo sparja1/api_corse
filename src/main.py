@@ -81,6 +81,7 @@ def main():
             keyword = input("Введите ключевое слово: ")
             print(db.get_vacancies_with_keyword(keyword))
         elif choice == '6':
+            db.close()
             break
         else:
             print("Неверный ввод. Пожалуйста, введите номер от 1 до 6.")
